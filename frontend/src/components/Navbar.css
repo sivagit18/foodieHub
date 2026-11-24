@@ -1,4 +1,8 @@
 
+/* =========================
+   NAVBAR
+========================= */
+
 .navbar {
   width: 100%;
   background: #ffffff;
@@ -16,8 +20,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 25px;
+  gap: 18px;
 }
+
+/* =========================
+   LOGO
+========================= */
 
 .logo {
   font-size: 27px;
@@ -30,6 +38,10 @@
 .logo span {
   color: #ff6b35;
 }
+
+/* =========================
+   LOCATION
+========================= */
 
 .location {
   display: flex;
@@ -50,14 +62,25 @@
   font-size: 14px;
 }
 
-.search-box {
+/* =========================
+   SEARCH BOX
+========================= */
+
+.search-wrapper {
   flex: 1;
+  min-width: 180px;
+  position: relative;
+}
+
+.search-box {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
   background: #f6f6f6;
   padding: 13px 16px;
   border-radius: 10px;
+  color: #777777;
 }
 
 .search-box input {
@@ -66,7 +89,116 @@
   outline: none;
   background: transparent;
   font-size: 14px;
+  color: #333333;
 }
+
+.search-clear {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  color: #777777;
+  cursor: pointer;
+}
+
+/* =========================
+   SEARCH RESULTS
+========================= */
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 100%;
+  min-width: 300px;
+  max-height: 420px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  z-index: 200;
+}
+
+.search-section {
+  padding: 12px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.search-section:last-child {
+  border-bottom: none;
+}
+
+.search-section h4 {
+  margin: 0 0 9px;
+  font-size: 12px;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.search-result-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 8px;
+  border: none;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.search-result-item:hover {
+  background: #fff4ee;
+}
+
+.result-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff0e8;
+  border-radius: 9px;
+  font-size: 19px;
+  flex-shrink: 0;
+}
+
+.result-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.result-details strong {
+  font-size: 13px;
+  color: #333333;
+}
+
+.result-details small {
+  font-size: 11px;
+  color: #888888;
+}
+
+.result-price {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ff6b35;
+}
+
+.search-message {
+  padding: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: #888888;
+}
+
+/* =========================
+   NAVIGATION ACTIONS
+========================= */
 
 .nav-actions {
   display: flex;
@@ -89,7 +221,10 @@
   cursor: pointer;
   text-decoration: none;
   transition: 0.2s;
+  font-family: inherit;
 }
+
+/* Cart, My Orders and Profile */
 
 .cart-btn {
   border: 1px solid #eeeeee;
@@ -113,6 +248,8 @@
   color: #ff6b35;
 }
 
+/* Login and Logout */
+
 .login-btn {
   border: none;
   background: #ff6b35;
@@ -130,32 +267,38 @@
   white-space: nowrap;
 }
 
-/* Responsive Design */
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 1100px) {
   .nav-container {
-    gap: 15px;
+    gap: 12px;
   }
 
   .location {
     display: none;
   }
+
+  .nav-actions {
+    gap: 7px;
+  }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .nav-container {
     flex-wrap: wrap;
     padding: 0 15px;
   }
 
-  .search-box {
+  .search-wrapper {
     order: 3;
     flex-basis: 100%;
   }
 
   .nav-actions {
-    gap: 7px;
     flex-wrap: wrap;
+    gap: 7px;
   }
 
   .user-greeting {
@@ -163,15 +306,27 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 520px) {
+  .navbar {
+    padding: 13px 0;
+  }
+
   .logo {
     font-size: 23px;
+  }
+
+  .nav-actions {
+    gap: 5px;
   }
 
   .cart-btn,
   .orders-btn,
   .login-btn {
     padding: 9px 10px;
-    font-size: 12px;
+    font-size: 11px;
+  }
+
+  .search-results {
+    min-width: 0;
   }
 }

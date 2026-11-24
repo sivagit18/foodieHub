@@ -1,9 +1,9 @@
-
 from decimal import Decimal, InvalidOperation
 from uuid import uuid4
 import re
 
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
@@ -20,7 +20,7 @@ from .serializers import (
 )
 
 
-# GET - Display active restaurants
+# GET - Display and search active restaurants
 class RestaurantListView(APIView):
 
     permission_classes = [AllowAny]
@@ -29,7 +29,17 @@ class RestaurantListView(APIView):
 
         restaurants = Restaurant.objects.filter(
             is_active=True
-        ).order_by('name')
+        )
+
+        search_query = request.query_params.get('q', '').strip()
+
+        if search_query:
+            restaurants = restaurants.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query)
+            )
+
+        restaurants = restaurants.order_by('name')
 
         serializer = RestaurantSerializer(
             restaurants,
@@ -42,7 +52,7 @@ class RestaurantListView(APIView):
         })
 
 
-# GET - Display available food items
+# GET - Display and search available food items
 class FoodListView(APIView):
 
     permission_classes = [AllowAny]
@@ -52,16 +62,28 @@ class FoodListView(APIView):
         foods = Food.objects.filter(
             is_available=True,
             restaurant__is_active=True
-        ).select_related('restaurant').order_by('name')
+        ).select_related('restaurant')
 
         restaurant_id = request.query_params.get('restaurant_id')
         category = request.query_params.get('category')
+        search_query = request.query_params.get('q', '').strip()
 
         if restaurant_id:
             foods = foods.filter(restaurant_id=restaurant_id)
 
         if category:
             foods = foods.filter(category__iexact=category)
+
+        # Search food name, description, category and restaurant name
+        if search_query:
+            foods = foods.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(category__icontains=search_query) |
+                Q(restaurant__name__icontains=search_query)
+            )
+
+        foods = foods.order_by('name')
 
         serializer = FoodSerializer(
             foods,
@@ -209,7 +231,6 @@ class OrderListCreateView(APIView):
                     'quantity': quantity
                 })
 
-            # Fixed delivery fee controlled by the backend.
             delivery_fee = Decimal('40.00')
             total = subtotal + delivery_fee
 
