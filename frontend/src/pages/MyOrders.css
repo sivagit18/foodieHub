@@ -1,0 +1,348 @@
+
+.my-orders-container {
+  max-width: 1100px;
+  margin: 45px auto;
+  padding: 0 25px;
+}
+
+.my-orders-heading {
+  margin-bottom: 30px;
+}
+
+.my-orders-heading h1 {
+  font-size: 32px;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.my-orders-heading p {
+  color: #777;
+  font-size: 14px;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.order-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.order-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #999;
+  letter-spacing: 1px;
+}
+
+.order-card-header h3 {
+  color: #222;
+  font-size: 17px;
+  margin: 6px 0;
+}
+
+.order-date {
+  color: #888;
+  font-size: 12px;
+}
+
+.order-status {
+  background: #fff4e9;
+  color: #e87516;
+  padding: 8px 13px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.order-status.delivered {
+  background: #e9f8ef;
+  color: #21864b;
+}
+
+.order-status.cancelled {
+  background: #fff0ef;
+  color: #d94336;
+}
+
+.order-card-items {
+  padding: 18px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.order-food-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.order-food-item h4 {
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.order-food-item p {
+  color: #888;
+  font-size: 12px;
+}
+
+.order-food-item strong {
+  color: #333;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.order-delivery-details {
+  padding: 18px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.order-delivery-details h4 {
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 9px;
+}
+
+.order-delivery-details p {
+  color: #777;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.order-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 18px;
+  color: #333;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.order-card-footer strong {
+  color: #fc8019;
+  font-size: 20px;
+}
+
+.orders-message {
+  text-align: center;
+  padding: 50px 20px;
+  color: #777;
+}
+
+.orders-error {
+  background: #fff0ed;
+  border: 1px solid #ffd2c8;
+  color: #c0392b;
+  padding: 16px;
+  border-radius: 9px;
+}
+
+.empty-orders {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  text-align: center;
+  padding: 65px 20px;
+}
+
+.empty-orders-icon {
+  font-size: 55px;
+  margin-bottom: 15px;
+}
+
+.empty-orders h2 {
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.empty-orders p {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+
+.empty-orders button {
+  background: #fc8019;
+  color: white;
+  border: none;
+  padding: 13px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.empty-orders button:hover {
+  background: #e96e0c;
+}
+
+@media (max-width: 600px) {
+  .my-orders-container {
+    margin: 30px auto;
+    padding: 0 15px;
+  }
+
+  .my-orders-heading h1 {
+    font-size: 27px;
+  }
+
+  .order-card {
+    padding: 18px;
+  }
+
+  .order-card-header {
+    flex-direction: column;
+  }
+
+  .order-status {
+    align-self: flex-start;
+  }
+}
+/* Order Tracking */
+.tracking-section {
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.tracking-section h3 {
+  color: #333;
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.tracking-timeline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tracking-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 9px;
+  color: #aaa;
+}
+
+.tracking-marker {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tracking-step.completed .tracking-marker {
+  background: #fc8019;
+  border-color: #fc8019;
+  color: white;
+}
+
+.tracking-step.current strong {
+  color: #fc8019;
+}
+
+.tracking-step-text strong {
+  font-size: 11px;
+  color: #777;
+}
+
+.tracking-step-text span {
+  display: block;
+  font-size: 10px;
+  color: #fc8019;
+  margin-top: 4px;
+}
+
+.cancelled-message {
+  padding: 20px 0;
+  color: #d94336;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+}
+
+.order-cancel-section {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.cancel-order-btn {
+  background: #fff;
+  color: #d94336;
+  border: 1px solid #d94336;
+  padding: 10px 20px;
+  border-radius: 7px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cancel-order-btn:hover:not(:disabled) {
+  background: #d94336;
+  color: white;
+}
+
+.cancel-order-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-order-error {
+  color: #c0392b;
+  background: #fff0ed;
+  padding: 10px;
+  border-radius: 7px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+  .tracking-timeline {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 18px;
+  }
+
+  .tracking-step {
+    flex: 0 0 28%;
+  }
+
+  .tracking-step-text strong {
+    font-size: 10px;
+  }
+
+  .order-cancel-section {
+    justify-content: stretch;
+  }
+
+  .cancel-order-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,271 @@
+
+.home-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 30px 25px 70px;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 55px;
+  background: #fff3ed;
+  border-radius: 22px;
+  min-height: 350px;
+}
+
+.hero-content {
+  flex: 1;
+}
+
+.hero-tag {
+  color: #ff6b35;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.hero h1 {
+  font-size: 46px;
+  line-height: 1.2;
+  color: #222222;
+  margin: 18px 0;
+}
+
+.hero h1 span {
+  color: #ff6b35;
+}
+
+.hero p {
+  color: #777777;
+  font-size: 15px;
+  line-height: 1.8;
+  max-width: 430px;
+}
+
+.explore-btn {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  background: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hero-image {
+  flex: 1;
+  max-width: 450px;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+.category-section,
+.restaurant-section {
+  margin-top: 55px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.section-heading h2 {
+  font-size: 25px;
+  color: #222222;
+}
+
+.section-heading p {
+  color: #888888;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 15px;
+}
+
+.category-card {
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 14px;
+  padding: 22px 10px;
+  text-align: center;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  border-color: #ff6b35;
+}
+
+.category-card span {
+  font-size: 35px;
+}
+
+.category-card h4 {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #333333;
+}
+
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.restaurant-card {
+  border: 1px solid #eeeeee;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  background: #ffffff;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px #0000000d;
+}
+
+.restaurant-image {
+  height: 170px;
+  position: relative;
+}
+
+.restaurant-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.offer {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  background: #ff6b35;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.restaurant-info {
+  padding: 17px;
+}
+
+.restaurant-info h3 {
+  font-size: 16px;
+  color: #222222;
+}
+
+.restaurant-info p {
+  color: #888888;
+  font-size: 12px;
+  margin-top: 7px;
+  line-height: 1.6;
+  min-height: 38px;
+}
+
+.restaurant-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  font-size: 12px;
+  color: #555555;
+}
+
+.restaurant-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.view-all {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  color: #ff6b35;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.restaurant-message {
+  text-align: center;
+  padding: 35px 15px;
+  color: #777777;
+  background: #fffaf7;
+  border-radius: 12px;
+}
+
+.restaurant-error {
+  text-align: center;
+  padding: 25px;
+  color: #d93025;
+  background: #fff3f3;
+  border-radius: 12px;
+}
+
+@media (max-width: 900px) {
+  .category-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .restaurant-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .home-container {
+    padding: 20px 15px 50px;
+  }
+
+  .hero {
+    flex-direction: column;
+    padding: 28px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero-image {
+    max-width: 100%;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .restaurant-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.category-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
