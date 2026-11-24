@@ -1,61 +1,162 @@
-# 🍔 FoodieHub
+# 🍔 FoodieHub – Online Food Ordering Application
 
-### Multi-Restaurant Food Ordering Application
+FoodieHub is a full-stack online food ordering application that allows users to explore restaurants, browse food items, add products to their cart, place orders, and manage their orders.
 
-## Project Overview
+## 🚀 Features
 
-FoodieHub is a full-stack food ordering platform that allows customers to explore food items from multiple registered restaurants, browse restaurant menus, add food items to their cart, and place orders online.
+- User Registration and Login
+- Browse Restaurants
+- Explore Food Categories
+- View Restaurant Menus
+- Add and Remove Cart Items
+- Update Food Quantities
+- Secure Checkout
+- Place Food Orders
+- View Order History
+- Cancel Orders
+- User Authentication
 
-Restaurant owners can independently register their restaurants, manage food menus, and receive customer orders.
+## 🛠️ Technologies Used
 
-## Technology Stack
+### Frontend
+- React.js
+- JavaScript
+- HTML5
+- CSS3
+- Vite
+- React Router
 
-| Layer | Technology |
-|---|---|
-| Frontend | React JS |
-| Backend | Python Django |
-| API | Django REST Framework |
-| Database | MySQL |
-| Authentication | JWT |
-| API Testing | Postman |
-| Version Control | Git & GitHub |
+### Backend
+- Python
+- Django
+- Django REST Framework
+- REST API
 
-## Main Modules
+### Database
+- MySQL
 
-1. Customer Management
-2. Restaurant Registration
-3. Restaurant Management
-4. Food Category Management
-5. Food Management
-6. Shopping Cart
-7. Order Management
-8. Payment Integration
-9. Admin Dashboard
+### Tools
+- Visual Studio Code
+- Git
+- GitHub
+- MySQL Workbench
 
-## Project Structure
+## 📂 Project Structure
 
 ```text
 FoodieHub/
+│
 ├── backend/
+│   ├── config/
+│   ├── users/
+│   ├── restaurants/
+│   ├── menu/
+│   ├── cart/
+│   ├── orders/
+│   ├── payments/
+│   ├── food_orders/
+│   ├── manage.py
+│   └── requirements.txt
+│
 ├── frontend/
-├── database/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   └── package.json
+│
 ├── docs/
 ├── .gitignore
 └── README.md
 ```
 
-## Application Architecture
+## ⚙️ Installation and Setup
 
-React JS communicates with the Django REST API. Django processes business logic and interacts with the MySQL database.
+### 1. Clone the Repository
 
-## Project Status
+```bash
+git clone https://github.com/sivagit18/foodieHub.git
+```
 
-Currently in the project setup and architecture planning phase.
+### 2. Backend Setup
 
-## Future Enhancements
+```bash
+cd FoodieHub/backend
+```
 
-- Restaurant self-service kiosk.
-- Delivery partner management.
-- Live order tracking.
-- Mobile application.
-- Payment gateway integration.
+Create a virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate it:
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Create a `.env` file inside the backend folder and configure your database credentials and Django secret key.
+
+### 3. Database Setup
+
+Create a MySQL database named:
+
+```sql
+CREATE DATABASE foodiehub_db;
+```
+
+Configure the database credentials in the backend `.env` file.
+
+Run migrations:
+
+```bash
+python manage.py migrate
+```
+
+Start the backend server:
+
+```bash
+python manage.py runserver
+```
+
+Backend URL: http://127.0.0.1:8000/
+
+### 4. Frontend Setup
+
+Open another terminal:
+
+```bash
+cd FoodieHub/frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the frontend:
+
+```bash
+npm run dev
+```
+
+Frontend URL: http://localhost:5173/
+
+## 👨‍💻 Developer
+
+**Siva Murugan**
+
+GitHub: https://github.com/sivagit18
+
+## 📌 Project Status
+
+Development project – FoodieHub.
