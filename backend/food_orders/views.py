@@ -252,7 +252,11 @@ class OrderListCreateView(APIView):
                 pincode=pincode,
                 subtotal=subtotal,
                 delivery_fee=delivery_fee,
-                total=total
+                total=total,
+
+                 # Cash on Delivery
+                payment_method='COD',
+                payment_status='Pending'
             )
 
             OrderItem.objects.bulk_create([

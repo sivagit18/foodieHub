@@ -1,8 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./Menu.css";
+
+const API = "http://127.0.0.1:8000/api/orders";
 
 const fallbackImage =
   "https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=600";
@@ -36,12 +37,11 @@ function Menu() {
 
         if (categoryName) {
           apiUrl =
-            `http://127.0.0.1:8000/api/orders/foods/?category=${encodeURIComponent(categoryName)}`;
+            `${API}/foods/?category=${encodeURIComponent(categoryName)}`;
 
           setRestaurantName(`${categoryName} Foods`);
         } else {
-          apiUrl =
-            `http://127.0.0.1:8000/api/orders/foods/?restaurant_id=${restaurantId}`;
+          apiUrl = `${API}/foods/?restaurant_id=${restaurantId}`;
         }
 
         const response = await fetch(apiUrl);
@@ -69,47 +69,82 @@ function Menu() {
     fetchFoods();
   }, [restaurantId, categoryName]);
 
-  const addToCart = (food) => {
+  // Create a consistent cart item ID
+  const getCartItemId = (food) => {
     const restaurant = food.restaurant_name || restaurantName;
-    const cartItemId = `${restaurant}-${food.id}`;
+    return `${restaurant}-${food.id}`;
+  };
 
-    const existingItem = cart.find(
+  // Update cart quantity
+  const updateCart = (food, change) => {
+    const restaurant = food.restaurant_name || restaurantName;
+    const cartItemId = getCartItemId(food);
+
+    setCart((previousCart) => {
+      const existingItem = previousCart.find(
+        (item) => item.id === cartItemId
+      );
+
+      let updatedCart;
+
+      if (existingItem) {
+        updatedCart = previousCart
+          .map((item) => {
+            if (item.id === cartItemId) {
+              return {
+                ...item,
+                quantity: item.quantity + change,
+              };
+            }
+
+            return item;
+          })
+          .filter((item) => item.quantity > 0);
+      } else if (change > 0) {
+        updatedCart = [
+          ...previousCart,
+          {
+            ...food,
+            id: cartItemId,
+            foodId: food.id,
+            name: food.name,
+            restaurantName: restaurant,
+            price: Number(food.price),
+            quantity: 1,
+          },
+        ];
+      } else {
+        updatedCart = previousCart;
+      }
+
+      localStorage.setItem(
+        "foodiehub_cart",
+        JSON.stringify(updatedCart)
+      );
+
+      return updatedCart;
+    });
+  };
+
+  const getFoodQuantity = (food) => {
+    const cartItemId = getCartItemId(food);
+
+    const cartItem = cart.find(
       (item) => item.id === cartItemId
     );
 
-    let updatedCart;
-
-    if (existingItem) {
-      updatedCart = cart.map((item) =>
-        item.id === cartItemId
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-    } else {
-      updatedCart = [
-        ...cart,
-        {
-          ...food,
-          id: cartItemId,
-          foodId: food.id,
-          name: food.name,
-          restaurantName: restaurant,
-          price: Number(food.price),
-          quantity: 1,
-        },
-      ];
-    }
-
-    setCart(updatedCart);
-
-    localStorage.setItem(
-      "foodiehub_cart",
-      JSON.stringify(updatedCart)
-    );
+    return cartItem ? cartItem.quantity : 0;
   };
 
   const totalItems = cart.reduce(
-    (total, item) => total + item.quantity,
+    (total, item) => total + Number(item.quantity || 0),
+    0
+  );
+
+  const cartTotal = cart.reduce(
+    (total, item) =>
+      total +
+      Number(item.price || 0) * Number(item.quantity || 0),
     0
   );
 
@@ -118,13 +153,23 @@ function Menu() {
       <Navbar />
 
       <main className="menu-container">
-        <h1>{restaurantName}</h1>
+        <div className="menu-heading">
+          <div>
+            <h1>{restaurantName}</h1>
 
-        <p className="menu-subtitle">
-          {categoryName
-            ? `Explore our delicious ${categoryName} collection`
-            : "Explore our delicious food menu"}
-        </p>
+            <p className="menu-subtitle">
+              {categoryName
+                ? `Explore our delicious ${categoryName} collection`
+                : "Explore our delicious food menu"}
+            </p>
+          </div>
+
+          {!loading && !error && foodItems.length > 0 && (
+            <span className="menu-food-count">
+              {foodItems.length} Food Items
+            </span>
+          )}
+        </div>
 
         {loading && (
           <p className="menu-message">
@@ -144,50 +189,96 @@ function Menu() {
 
         {!loading && !error && foodItems.length > 0 && (
           <div className="food-grid">
-            {foodItems.map((food) => (
-              <div className="food-card" key={food.id}>
-                <div className="food-image">
-                  <img
-                    src={food.image_url || fallbackImage}
-                    alt={food.name}
-                    onError={(event) => {
-                      event.currentTarget.src = fallbackImage;
-                    }}
-                  />
-                </div>
+            {foodItems.map((food) => {
+              const quantity = getFoodQuantity(food);
 
-                <div className="food-info">
-                  <span className="food-category">
-                    {food.category}
-                  </span>
+              return (
+                <div className="food-card" key={food.id}>
+                  <div className="food-image">
+                    <img
+                      src={food.image_url || fallbackImage}
+                      alt={food.name}
+                      onError={(event) => {
+                        event.currentTarget.onerror = null;
+                        event.currentTarget.src = fallbackImage;
+                      }}
+                    />
+                  </div>
 
-                  {categoryName && (
-                    <small className="food-restaurant-name">
-                      {food.restaurant_name}
-                    </small>
-                  )}
+                  <div className="food-info">
+                    <div className="food-labels">
+                      <span className="food-category">
+                        {food.category || "Food"}
+                      </span>
 
-                  <h3>{food.name}</h3>
+                      {categoryName && (
+                        <small className="food-restaurant-name">
+                          {food.restaurant_name}
+                        </small>
+                      )}
+                    </div>
 
-                  <p>{food.description}</p>
+                    <h3>{food.name}</h3>
 
-                  <div className="food-bottom">
-                    <strong>
-                      ₹{Number(food.price).toFixed(2)}
-                    </strong>
+                    <p>
+                      {food.description || "Fresh and delicious food."}
+                    </p>
 
-                    <button onClick={() => addToCart(food)}>
-                      Add +
-                    </button>
+                    <div className="food-bottom">
+                      <strong>
+                        ₹{Number(food.price).toFixed(2)}
+                      </strong>
+
+                      {quantity === 0 ? (
+                        <button
+                          className="add-button"
+                          onClick={() => updateCart(food, 1)}
+                        >
+                          Add +
+                        </button>
+                      ) : (
+                        <div className="quantity-control">
+                          <button
+                            className="quantity-button"
+                            onClick={() => updateCart(food, -1)}
+                            aria-label={`Remove one ${food.name}`}
+                          >
+                            −
+                          </button>
+
+                          <span>{quantity}</span>
+
+                          <button
+                            className="quantity-button"
+                            onClick={() => updateCart(food, 1)}
+                            aria-label={`Add one ${food.name}`}
+                          >
+                            +
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
+        {/* Cart Summary */}
         <div className="menu-cart-summary">
-          🛒 Items in Cart: {totalItems}
+          <div className="cart-summary-info">
+            <span className="cart-summary-icon">🛒</span>
+
+            <div>
+              <strong>Items in Cart: {totalItems}</strong>
+              <small>Food subtotal</small>
+            </div>
+          </div>
+
+          <strong className="cart-summary-total">
+            ₹{cartTotal.toFixed(2)}
+          </strong>
         </div>
       </main>
     </>

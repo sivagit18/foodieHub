@@ -68,6 +68,8 @@ class OrderSerializer(serializers.ModelSerializer):
             'subtotal',
             'delivery_fee',
             'total',
+            'payment_method',
+            'payment_status',
             'status',
             'created_at',
             'items',
@@ -76,6 +78,8 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id',
             'order_id',
+            'payment_method',
+            'payment_status',
             'status',
             'created_at',
         ]

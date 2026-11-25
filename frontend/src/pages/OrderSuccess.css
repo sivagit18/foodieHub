@@ -4,66 +4,299 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 20px;
+  padding: 40px 20px 60px;
   background: #fafafa;
 }
 
 .success-card {
   width: 100%;
-  max-width: 650px;
+  max-width: 680px;
   background: #fff;
-  padding: 40px;
+  padding: 35px;
   border-radius: 16px;
-  text-align: center;
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.06);
 }
 
+/* Success Header */
+
+.success-header {
+  text-align: center;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #eee;
+}
+
 .success-icon {
-  width: 75px;
-  height: 75px;
-  margin: 0 auto 22px;
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 17px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #e6f8ed;
   color: #20a45a;
   border-radius: 50%;
-  font-size: 42px;
-  font-weight: 700;
 }
 
-.success-card h1 {
-  font-size: 27px;
+.success-label {
+  display: inline-block;
+  background: #e6f8ed;
+  color: #20a45a;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.success-header h1 {
+  font-size: 26px;
   color: #222;
-  margin-bottom: 12px;
+  margin: 15px 0 10px;
 }
 
 .success-message {
   color: #777;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.6;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
-.order-details {
-  text-align: left;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 25px;
+.success-order-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 17px;
+  background: #fff7f2;
+  border: 1px dashed #ffb58e;
+  border-radius: 8px;
+  font-size: 13px;
 }
 
-.order-details h2 {
-  font-size: 19px;
+.success-order-id span {
+  color: #777;
+}
+
+.success-order-id strong {
+  color: #fc8019;
+  overflow-wrap: anywhere;
+}
+
+/* Status Card */
+
+.success-status-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 17px;
+  margin: 25px 0;
+  background: #f6fbf8;
+  border: 1px solid #e2f1e7;
+  border-radius: 10px;
+}
+
+.status-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #e6f8ed;
+  color: #20a45a;
+  border-radius: 9px;
+}
+
+.success-status-card strong {
+  color: #287c4c;
+  font-size: 14px;
+}
+
+.success-status-card p {
+  color: #777;
+  font-size: 12px;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+/* Sections */
+
+.success-section {
+  padding: 23px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.success-section h2 {
+  font-size: 18px;
   color: #222;
+  margin-bottom: 20px;
+}
+
+/* Delivery Details */
+
+.success-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+
+.detail-icon {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff3ed;
+  color: #fc8019;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.detail-content span {
+  color: #888;
+  font-size: 12px;
+}
+
+.detail-content strong {
+  color: #333;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* Ordered Items */
+
+.success-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.success-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.success-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.success-item-info strong {
+  color: #333;
+  font-size: 14px;
+}
+
+.success-item-info span,
+.success-item-info small {
+  color: #888;
+  font-size: 12px;
+}
+
+.success-item-price {
+  color: #222;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Payment Summary */
+
+.success-payment-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  margin-bottom: 13px;
+  background: #fffaf5;
+  border: 1px solid #ffe3d1;
+  border-radius: 10px;
+}
+
+.payment-method-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #fff0e5;
+  color: #fc8019;
+  border-radius: 9px;
+}
+
+.payment-method-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+
+.payment-method-info span,
+.success-payment-status span {
+  color: #888;
+  font-size: 12px;
+}
+
+.payment-method-info strong {
+  color: #333;
+  font-size: 14px;
+}
+
+.payment-cod-badge {
+  padding: 5px 10px;
+  color: #287c4c;
+  background: #e6f8ed;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.success-payment-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
   margin-bottom: 22px;
+  background: #fff8e9;
+  border: 1px solid #f5e6c5;
+  border-radius: 9px;
+}
+
+.payment-status-icon {
+  color: #bd821d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-payment-status div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.success-payment-status strong {
+  color: #a56e12;
+  font-size: 13px;
 }
 
 .success-row {
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  margin-bottom: 17px;
+  margin-bottom: 16px;
   font-size: 14px;
 }
 
@@ -77,57 +310,39 @@
   overflow-wrap: anywhere;
 }
 
-.placed-status {
-  color: #20a45a !important;
-}
-
-.success-items-heading {
-  font-size: 16px;
-  color: #222;
-  border-top: 1px solid #eee;
-  padding-top: 20px;
-  margin: 20px 0;
-}
-
-.success-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  margin-bottom: 15px;
-  font-size: 14px;
-  color: #555;
-}
-
-.success-item strong {
-  color: #222;
-  white-space: nowrap;
-}
-
 .final-amount {
   border-top: 1px solid #eee;
   padding-top: 18px;
   margin-top: 8px;
   margin-bottom: 0;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
 }
 
 .final-amount strong {
-  color: #fc8019 !important;
+  color: #fc8019;
+  font-size: 19px;
 }
+
+/* Actions */
 
 .success-actions {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 12px;
   flex-wrap: wrap;
+  padding-top: 25px;
 }
 
 .home-btn,
 .orders-btn {
-  padding: 13px 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
@@ -137,6 +352,7 @@
 .home-btn {
   background: #fc8019;
   color: #fff;
+  border: 1px solid #fc8019;
 }
 
 .home-btn:hover {
@@ -154,33 +370,82 @@
   color: #fc8019;
 }
 
-.order-not-found {
+.success-footer {
   text-align: center;
-  padding: 100px 20px;
+  color: #999;
+  font-size: 12px;
+  margin-top: 25px;
+}
+
+/* Not Found */
+
+.order-not-found {
+  min-height: 65vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.not-found-icon {
+  width: 70px;
+  height: 70px;
+  background: #fff3ed;
+  color: #fc8019;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-bottom: 20px;
 }
 
 .order-not-found h2 {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   color: #333;
 }
 
+.order-not-found p {
+  color: #777;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
 .order-not-found a {
-  color: #fc8019;
+  color: #fff;
+  background: #fc8019;
+  padding: 12px 20px;
+  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
 }
 
+/* Responsive */
+
 @media (max-width: 600px) {
+  .success-container {
+    padding: 25px 12px 40px;
+  }
+
   .success-card {
-    padding: 25px 18px;
+    padding: 25px 17px;
   }
 
-  .success-card h1 {
-    font-size: 23px;
+  .success-header h1 {
+    font-size: 22px;
   }
 
-  .order-details {
-    padding: 18px;
+  .success-message {
+    font-size: 13px;
+  }
+
+  .success-section {
+    padding: 20px 0;
+  }
+
+  .success-section h2 {
+    font-size: 17px;
   }
 
   .success-row,

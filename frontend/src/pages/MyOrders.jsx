@@ -1,8 +1,22 @@
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Package,
+  RefreshCw,
+  ShoppingBag,
+  CalendarDays,
+  MapPin,
+  Phone,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  Banknote,
+} from "lucide-react";
 import Navbar from "../components/Navbar";
 import "./MyOrders.css";
+
+const API = "http://127.0.0.1:8000/api/orders/";
 
 const trackingSteps = [
   "Placed",
@@ -17,6 +31,7 @@ function MyOrders() {
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [cancelingOrderId, setCancelingOrderId] = useState(null);
   const [cancelError, setCancelError] = useState({
@@ -24,56 +39,7 @@ function MyOrders() {
     message: "",
   });
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const token = localStorage.getItem("foodiehub_token");
-
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/orders/",
-          {
-            headers: {
-              Authorization: `Token ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          setError(
-            result.detail ||
-            result.error ||
-            "Unable to load your orders."
-          );
-          return;
-        }
-
-        setOrders(result.orders || []);
-      } catch (err) {
-        console.error("Fetch orders error:", err);
-        setError("Cannot connect to the server. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-  }, [navigate]);
-
-  const handleCancelOrder = async (order) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to cancel order ${order.order_id}?`
-    );
-
-    if (!confirmed) return;
-
+  const fetchOrders = useCallback(async (isRefresh = false) => {
     const token = localStorage.getItem("foodiehub_token");
 
     if (!token) {
@@ -81,244 +47,424 @@ function MyOrders() {
       return;
     }
 
-    setCancelingOrderId(order.id);
-    setCancelError({ orderId: null, message: "" });
+    if (isRefresh) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
+
+    setError("");
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/orders/${order.id}/cancel/`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(API, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem("foodiehub_token");
+        localStorage.removeItem("foodiehub_user");
+        navigate("/login");
+        return;
+      }
 
       const result = await response.json();
 
       if (!response.ok) {
-        setCancelError({
-          orderId: order.id,
-          message:
-            result.message ||
-            result.error ||
-            result.detail ||
-            "Unable to cancel this order.",
-        });
-        return;
+        throw new Error(result.detail || "Unable to fetch orders.");
       }
 
-      setOrders((currentOrders) =>
-        currentOrders.map((item) =>
-          item.id === order.id
+      setOrders(Array.isArray(result.orders) ? result.orders : []);
+    } catch (err) {
+      setError(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const handleCancelOrder = async (orderId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this order?"
+    );
+
+    if (!confirmed) return;
+
+    const token = localStorage.getItem("foodiehub_token");
+
+    setCancelingOrderId(orderId);
+    setCancelError({ orderId: null, message: "" });
+
+    try {
+      const response = await fetch(`${API}${orderId}/cancel/`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || "Unable to cancel this order.");
+      }
+
+      setOrders((previousOrders) =>
+        previousOrders.map((order) =>
+          order.id === orderId
             ? {
-                ...item,
+                ...order,
                 status: result.order?.status || "Cancelled",
               }
-            : item
+            : order
         )
       );
     } catch (err) {
-      console.error("Cancel order error:", err);
-
       setCancelError({
-        orderId: order.id,
-        message: "Cannot connect to the server. Please try again.",
+        orderId,
+        message: err.message || "Unable to cancel this order.",
       });
     } finally {
       setCancelingOrderId(null);
     }
   };
 
-  const formatDate = (date) => {
-    if (!date) return "Date unavailable";
+  const formatDate = (dateValue) => {
+    if (!dateValue) return "Date not available";
 
-    const parsedDate = new Date(date);
+    const date = new Date(dateValue);
 
-    if (Number.isNaN(parsedDate.getTime())) {
-      return "Date unavailable";
+    if (Number.isNaN(date.getTime())) {
+      return "Date not available";
     }
 
-    return parsedDate.toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return date.toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
     });
   };
 
-  const getStatusIndex = (status) => {
-    return trackingSteps.indexOf(status);
+  const formatPrice = (value) =>
+    Number(value || 0).toFixed(2);
+
+  const getStatusClass = (status) => {
+    const normalized = (status || "").toLowerCase();
+
+    if (normalized === "delivered") return "delivered";
+    if (normalized === "cancelled") return "cancelled";
+
+    return "active";
   };
+
+  const getCurrentStep = (status) =>
+    trackingSteps.indexOf(status);
+
+  const totalOrders = orders.length;
+
+  const activeOrders = orders.filter(
+    (order) =>
+      !["Delivered", "Cancelled"].includes(order.status)
+  ).length;
+
+  const deliveredOrders = orders.filter(
+    (order) => order.status === "Delivered"
+  ).length;
 
   return (
     <>
       <Navbar />
 
-      <div className="my-orders-container">
-        <div className="my-orders-heading">
-          <h1>My Orders</h1>
-          <p>Track and manage your food orders</p>
+      <main className="my-orders-container">
+        <div className="my-orders-top">
+          <div className="my-orders-heading">
+            <span className="orders-eyebrow">YOUR FOOD JOURNEY</span>
+            <h1>My Orders</h1>
+            <p>View your orders and track your food delivery.</p>
+          </div>
+
+          <button
+            className="refresh-orders-btn"
+            onClick={() => fetchOrders(true)}
+            disabled={refreshing || loading}
+          >
+            <RefreshCw
+              size={16}
+              className={refreshing ? "refresh-spinning" : ""}
+            />
+            Refresh Orders
+          </button>
         </div>
 
         {loading ? (
           <div className="orders-message">
-            Loading your orders...
+            <div className="orders-loader"></div>
+            <p>Loading your orders...</p>
           </div>
         ) : error ? (
-          <div className="orders-error">{error}</div>
-        ) : orders.length === 0 ? (
-          <div className="empty-orders">
-            <div className="empty-orders-icon">🛍️</div>
-            <h2>No orders yet!</h2>
-            <p>
-              Looks like you haven't placed any orders.
-              Start exploring delicious food.
-            </p>
-            <button onClick={() => navigate("/")}>
-              Explore Food
+          <div className="orders-error">
+            <p>{error}</p>
+            <button onClick={() => fetchOrders()}>
+              Try Again
             </button>
           </div>
         ) : (
-          <div className="orders-list">
-            {orders.map((order) => {
-              const currentStep = getStatusIndex(order.status);
-              const isCancelled = order.status === "Cancelled";
-              const canCancel = ["Placed", "Confirmed"].includes(
-                order.status
-              );
-              const isCanceling = cancelingOrderId === order.id;
+          <>
+            <div className="orders-stats">
+              <div className="orders-stat-card">
+                <div className="orders-stat-icon total-icon">
+                  <ShoppingBag size={21} />
+                </div>
+                <div>
+                  <strong>{totalOrders}</strong>
+                  <span>Total Orders</span>
+                </div>
+              </div>
 
-              return (
-                <div className="order-card" key={order.id}>
-                  <div className="order-card-header">
-                    <div>
-                      <span className="order-label">ORDER ID</span>
-                      <h3>{order.order_id}</h3>
-                      <p className="order-date">
-                        {formatDate(order.created_at)}
-                      </p>
-                    </div>
+              <div className="orders-stat-card">
+                <div className="orders-stat-icon active-icon">
+                  <Clock size={21} />
+                </div>
+                <div>
+                  <strong>{activeOrders}</strong>
+                  <span>Active Orders</span>
+                </div>
+              </div>
 
-                    <span
-                      className={`order-status ${
-                        isCancelled
-                          ? "cancelled"
-                          : order.status === "Delivered"
-                          ? "delivered"
-                          : ""
-                      }`}
-                    >
-                      {order.status}
-                    </span>
-                  </div>
+              <div className="orders-stat-card">
+                <div className="orders-stat-icon delivered-icon">
+                  <CheckCircle2 size={21} />
+                </div>
+                <div>
+                  <strong>{deliveredOrders}</strong>
+                  <span>Delivered Orders</span>
+                </div>
+              </div>
+            </div>
 
-                  {!isCancelled ? (
-                    <div className="tracking-section">
-                      <h3>Order Tracking</h3>
+            {orders.length === 0 ? (
+              <div className="empty-orders">
+                <div className="empty-orders-icon">
+                  <ShoppingBag size={35} />
+                </div>
+                <h2>No orders yet!</h2>
+                <p>
+                  You haven't placed any orders.
+                  Explore restaurants and order your favourite food.
+                </p>
+                <button onClick={() => navigate("/")}>
+                  Explore Restaurants
+                </button>
+              </div>
+            ) : (
+              <div className="orders-list">
+                {orders.map((order) => {
+                  const status = order.status || "Placed";
+                  const currentStep = getCurrentStep(status);
+                  const items = order.items || [];
 
-                      <div className="tracking-timeline">
-                        {trackingSteps.map((step, index) => {
-                          const completed = currentStep >= 0 &&
-                            index <= currentStep;
-                          const current = index === currentStep;
+                  const paymentMethod =
+                    order.payment_method === "COD"
+                      ? "Cash on Delivery"
+                      : order.payment_method || "Not available";
 
-                          return (
-                            <div
-                              className={`tracking-step ${
-                                completed ? "completed" : ""
-                              } ${current ? "current" : ""}`}
-                              key={step}
-                            >
-                              <div className="tracking-marker">
-                                {completed ? "✓" : index + 1}
-                              </div>
+                  const paymentStatus =
+                    order.payment_status || "Pending";
 
-                              <div className="tracking-step-text">
-                                <strong>{step}</strong>
-                                {current && (
-                                  <span>Current status</span>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="cancelled-message">
-                      This order has been cancelled.
-                    </div>
-                  )}
+                  const canCancel = ["Placed", "Confirmed"].includes(
+                    status
+                  );
 
-                  <div className="order-card-items">
-                    {(order.items || []).map((item) => (
-                      <div
-                        className="order-food-item"
-                        key={item.id}
-                      >
-                        <div>
-                          <h4>{item.food_name}</h4>
-                          <p>
-                            {item.restaurant_name} · Qty: {item.quantity}
-                          </p>
+                  return (
+                    <article className="order-card" key={order.id}>
+                      <div className="order-card-header">
+                        <div className="order-heading-info">
+                          <span className="order-label">ORDER ID</span>
+                          <h3>{order.order_id || order.id}</h3>
+
+                          <div className="order-date">
+                            <CalendarDays size={14} />
+                            {formatDate(order.created_at)}
+                          </div>
                         </div>
 
-                        <strong>
-                          ₹{(
-                            Number(item.price) * item.quantity
-                          ).toFixed(2)}
-                        </strong>
+                        <span className={`order-status ${getStatusClass(status)}`}>
+                          {status}
+                        </span>
                       </div>
-                    ))}
-                  </div>
 
-                  <div className="order-delivery-details">
-                    <h4>Delivery Address</h4>
-                    <p>
-                      {order.full_name} · {order.phone}
-                    </p>
-                    <p>
-                      {order.address}, {order.city} - {order.pincode}
-                    </p>
-                  </div>
+                      {/* Tracking */}
 
-                  <div className="order-card-footer">
-                    <span>Total Amount</span>
-                    <strong>
-                      ₹{Number(order.total).toFixed(2)}
-                    </strong>
-                  </div>
+                      {status === "Cancelled" ? (
+                        <div className="cancelled-message">
+                          <XCircle size={19} />
+                          This order has been cancelled.
+                        </div>
+                      ) : currentStep >= 0 ? (
+                        <section className="tracking-section">
+                          <h3>Order Tracking</h3>
 
-                  {canCancel && (
-                    <div className="order-cancel-section">
-                      <button
-                        className="cancel-order-btn"
-                        onClick={() => handleCancelOrder(order)}
-                        disabled={cancelingOrderId !== null}
-                      >
-                        {isCanceling
-                          ? "Cancelling..."
-                          : "Cancel Order"}
-                      </button>
-                    </div>
-                  )}
+                          <div className="tracking-timeline">
+                            {trackingSteps.map((step, index) => {
+                              const completed = index <= currentStep;
+                              const current = index === currentStep;
 
-                  {cancelError.orderId === order.id &&
-                    cancelError.message && (
-                      <p className="cancel-order-error">
-                        {cancelError.message}
-                      </p>
-                    )}
-                </div>
-              );
-            })}
-          </div>
+                              return (
+                                <div
+                                  className={`tracking-step ${
+                                    completed ? "completed" : ""
+                                  } ${current ? "current" : ""}`}
+                                  key={step}
+                                >
+                                  <div className="tracking-marker">
+                                    {completed ? (
+                                      <CheckCircle2 size={17} />
+                                    ) : (
+                                      index + 1
+                                    )}
+                                  </div>
+
+                                  <div className="tracking-step-text">
+                                    <strong>{step}</strong>
+                                    {current && <span>Current</span>}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </section>
+                      ) : (
+                        <p className="unknown-status">
+                          Current status: {status}
+                        </p>
+                      )}
+
+                      {/* Ordered Items */}
+
+                      <section className="order-card-items">
+                        <h3 className="order-section-title">
+                          Ordered Items
+                        </h3>
+
+                        {items.map((item, index) => (
+                          <div
+                            className="order-food-item"
+                            key={item.id || index}
+                          >
+                            <div className="food-item-icon">
+                              <ShoppingBag size={18} />
+                            </div>
+
+                            <div className="food-item-info">
+                              <h4>{item.food_name || item.name}</h4>
+                              <p>
+                                Quantity: {item.quantity}
+                                {item.restaurant_name
+                                  ? ` · ${item.restaurant_name}`
+                                  : ""}
+                              </p>
+                            </div>
+
+                            <strong>
+                              ₹
+                              {formatPrice(
+                                Number(item.price) *
+                                  Number(item.quantity)
+                              )}
+                            </strong>
+                          </div>
+                        ))}
+                      </section>
+
+                      {/* Delivery Details */}
+
+                      <section className="order-delivery-details">
+                        <h4>
+                          <MapPin size={17} />
+                          Delivery Information
+                        </h4>
+
+                        <p className="delivery-customer">
+                          {order.full_name || "Customer"}
+                        </p>
+
+                        <p>
+                          {order.address}, {order.city} - {order.pincode}
+                        </p>
+
+                        <p>
+                          <Phone size={14} /> {order.phone}
+                        </p>
+                      </section>
+
+                      {/* Payment Details */}
+
+                      <section className="order-payment-details">
+                        <h4>
+                          <Banknote size={17} />
+                          Payment Information
+                        </h4>
+
+                        <div className="order-payment-row">
+                          <span>Payment Method</span>
+                          <strong>{paymentMethod}</strong>
+                        </div>
+
+                        <div className="order-payment-row">
+                          <span>Payment Status</span>
+                          <strong
+                            className={`payment-status-text ${
+                              paymentStatus.toLowerCase() === "paid"
+                                ? "paid"
+                                : "pending"
+                            }`}
+                          >
+                            {paymentStatus}
+                          </strong>
+                        </div>
+                      </section>
+
+                      {/* Total */}
+
+                      <div className="order-card-footer">
+                        <span>Total Amount</span>
+                        <strong>₹{formatPrice(order.total)}</strong>
+                      </div>
+
+                      {/* Cancel */}
+
+                      {canCancel && (
+                        <div className="order-cancel-section">
+                          <button
+                            className="cancel-order-btn"
+                            onClick={() => handleCancelOrder(order.id)}
+                            disabled={cancelingOrderId === order.id}
+                          >
+                            {cancelingOrderId === order.id
+                              ? "Cancelling..."
+                              : "Cancel Order"}
+                          </button>
+                        </div>
+                      )}
+
+                      {cancelError.orderId === order.id && (
+                        <p className="cancel-order-error">
+                          {cancelError.message}
+                        </p>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </>
         )}
-      </div>
+      </main>
     </>
   );
 }
